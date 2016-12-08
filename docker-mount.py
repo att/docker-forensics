@@ -9,7 +9,7 @@
 #		a docker container to be mounted (read-only) for the purposes
 #		of forensic examination
 #
-# Copyright (c) 2016 Jim Clausing,. All rights reserved.
+# Copyright (c) 2016 AT&T Open Source. All rights reserved.
 #
 
 from sys import *

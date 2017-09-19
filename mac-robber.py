@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 #
-# Author: Jim Clausing
-# Date: 2017-09-01
+# Author:  Jim Clausing
+# Date:    2017-09-01
+# Version: 1.2.0
+#
 # Desc: rewrite of the sleithkit mac-robber in Python
 # Unlinke the TSK version, this one can actually includes the MD5 & inode number
 # though I still return a 0 in the MD5 column for non-regular files, but calculating
@@ -19,6 +21,8 @@
 #
 # This gets us hashes, but because the bind mount is read-only doesn't update atimes
 #
+# Copyright (c) 2017 AT&T Open Source. All rights reserved.
+#
 
 import os
 import sys
@@ -26,7 +30,7 @@ import argparse
 import hashlib
 from stat import *
 
-__version_info__ = (1,1,1,1)
+__version_info__ = (1,2,0)
 __version__ = ".".join(map(str, __version_info__))
 
 def mode_to_string(mode):

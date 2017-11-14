@@ -30,7 +30,7 @@ import argparse
 import hashlib
 from stat import *
 
-__version_info__ = (1,2,2)
+__version_info__ = (1,2,3)
 __version__ = ".".join(map(str, __version_info__))
 
 def mode_to_string(mode):
@@ -104,9 +104,14 @@ def process_item(dirpath,item):
     mode = mode_to_string(status.st_mode)
     if os.path.islink(fname) and status.st_size > 0:
         mode = mode + ' -> ' + os.readlink(fname)
-    mtime = '{:20.9f}'.format(status.st_mtime)
-    atime = '{:20.9f}'.format(status.st_atime)
-    ctime = '{:20.9f}'.format(status.st_mtime)
+    if sys.version_info<(2,7,0):
+        mtime = '%20.9f' % (status.st_mtime)
+        atime = '%20.9f' % (status.st_atime)
+        ctime = '%20.9f' % (status.st_mtime)
+    else:
+        mtime = '{:20.9f}'.format(status.st_mtime)
+        atime = '{:20.9f}'.format(status.st_atime)
+        ctime = '{:20.9f}'.format(status.st_mtime)
     btime = 0
     size = status.st_size
     uid = status.st_uid
@@ -122,6 +127,10 @@ def process_item(dirpath,item):
             fname = args.prefix + '/' + fname
     return md5str+'|'+fname+'|'+str(inode)+'|'+mode+'|'+str(uid)+'|'+str(gid)+'|'+str(size)+'|'+atime+'|'+mtime+'|'+ctime+'|'+str(btime)
     
+
+if sys.version_info<(2,6,0):
+    sys.stderr.write("Not tested on versions earlier than 2.6\n")
+    exit(1)
 
 parser = argparse.ArgumentParser(description='collect data on files')
 parser.add_argument('directories', metavar='DIR', nargs='+', help='directories to traverse')

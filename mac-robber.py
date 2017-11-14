@@ -30,7 +30,7 @@ import argparse
 import hashlib
 from stat import *
 
-__version_info__ = (1,2,1)
+__version_info__ = (1,2,2)
 __version__ = ".".join(map(str, __version_info__))
 
 def mode_to_string(mode):
@@ -88,7 +88,7 @@ def process_item(dirpath,item):
         return
     if args.hashes and S_ISREG(status.st_mode):
         try:
-            if (fname.find('/proc/') == -1 and not fname.endswith('/kcore')) and status.st_size > 0:
+            if not (fname.find('/proc/') != -1 and fname.endswith('/kcore')) and status.st_size > 0:
                 with open(fname, "rb") as f:
                     for block in iter(lambda: f.read(65536), b""):
                         md5.update(block)

@@ -2,14 +2,14 @@
 #
 #  Title: 	docker-mount.py
 #  Author:	Jim Clausing
-#  Date:	2016-10-12
-#  Version:	1.0.0
+#  Date:	2019-01-30
+#  Version:	1.0.1
 #
 #  Purpose:	Allow the mounting of the AUFS layered/union filesystem from
 #		a docker container to be mounted (read-only) for the purposes
 #		of forensic examination
 #
-# Copyright (c) 2016 AT&T Open Source. All rights reserved.
+# Copyright (c) 2016-2019 AT&T Open Source. All rights reserved.
 #
 
 from sys import *
@@ -39,17 +39,18 @@ def overlay2_mount():
     return()
 
 
-__version_info__ = (1,0,0)
+__version_info__ = (1,0,1)
 __version__ = ".".join(map(str, __version_info__))
 
 parser = argparse.ArgumentParser(prog='docker-mount', description='Mount docker container filesystem for forensic examination')
-parser.add_argument('container', help='container id (long hex string)')
+parser.add_argument('container', help='container id (sha256 hex string)')
 parser.add_argument('mntpnt', help='mount point where read-only filesystem will be mounted')
 #parser.add_argument('--verbose','-v', action='store_true', help='verbose',)
 parser.add_argument('-V','--version', action='version', help='print version number', version='%(prog)s v' + __version__)
-parser.add_argument('--root','-r', help='root of filesystem (should include trailing /, e.g. /mnt/image/)', default='')  # e.g., /mnt/image/
-parser.add_argument('--path','-p', help='path to docker files', default='/var/lib/docker')
-parser.add_argument('--storage','-s', help='storage driver, currently aufs and overlay2 are supported, default is aufs', default='aufs')
+parser.add_argument('--root','-r', 
+        help='root of filesystem containing forensic image (should include trailing /, e.g. /mnt/image/) [default: none]', default='')  # e.g., /mnt/image/
+parser.add_argument('--path','-p', help='path to docker files [default: /var/lib/docker]', default='/var/lib/docker')
+parser.add_argument('--storage','-s', help='storage driver, currently aufs and overlay2 are supported [default: aufs]', default='aufs')
 
 args=parser.parse_args()
 

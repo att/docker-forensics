@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
 # Author:  Jim Clausing
-# Date:    2017-09-01
-# Version: 1.2.0
+# Date:    2019-03-13
+# Version: 1.3.0
 #
 # Desc: rewrite of the sleithkit mac-robber in Python
 # Unlinke the TSK version, this one can actually includes the MD5 & inode number
@@ -21,16 +21,17 @@
 #
 # This gets us hashes, but because the bind mount is read-only doesn't update atimes
 #
-# Copyright (c) 2017 AT&T Open Source. All rights reserved.
+# Copyright (c) 2017-2019 AT&T Open Source. All rights reserved.
 #
 
+from __future__ import print_function
 import os
 import sys
 import argparse
 import hashlib
 from stat import *
 
-__version_info__ = (1,2,3)
+__version_info__ = (1,3,0)
 __version__ = ".".join(map(str, __version_info__))
 
 def mode_to_string(mode):
@@ -49,23 +50,23 @@ def mode_to_string(mode):
         mode_str = 'l'
     elif S_ISSOCK:
         mode_str = 's'
-    own_mode = lookup[(mode & 0700)>>6]
-    if mode & 04000:
-        if mode & 0100:
+    own_mode = lookup[(mode & 0o700)>>6]
+    if mode & 0o4000:
+        if mode & 0o100:
             own_mode = own_mode.replace('x','s')
         else:
             own_mode = own_mode[:1] + 'S'
     mode_str = mode_str + own_mode
-    grp_mode = lookup[(mode & 070)>>3]
-    if mode & 02000:
-        if mode & 010:
+    grp_mode = lookup[(mode & 0o70)>>3]
+    if mode & 0o2000:
+        if mode & 0o10:
             grp_mode = grp_mode.replace('x','s')
         else:
             grp_mode = grp_mode[:1] + 'S'
     mode_str = mode_str + own_mode
-    oth_mode = lookup[(mode & 07)]
-    if mode & 01000:
-        if mode & 01:
+    oth_mode = lookup[(mode & 0o7)]
+    if mode & 0o1000:
+        if mode & 0o1:
             oth_mode = oth_mode.replace('x','t')
         else:
             oth_mode = oth_mode[:1] + 'T'
@@ -105,13 +106,13 @@ def process_item(dirpath,item):
     if os.path.islink(fname) and status.st_size > 0:
         mode = mode + ' -> ' + os.readlink(fname)
     if sys.version_info<(2,7,0):
-        mtime = '%20.9f' % (status.st_mtime)
-        atime = '%20.9f' % (status.st_atime)
-        ctime = '%20.9f' % (status.st_mtime)
+        mtime = '%14.3f' % (status.st_mtime)
+        atime = '%14.3f' % (status.st_atime)
+        ctime = '%14.3f' % (status.st_mtime)
     else:
-        mtime = '{:20.9f}'.format(status.st_mtime)
-        atime = '{:20.9f}'.format(status.st_atime)
-        ctime = '{:20.9f}'.format(status.st_mtime)
+        mtime = '{:14.3f}'.format(status.st_mtime)
+        atime = '{:14.3f}'.format(status.st_atime)
+        ctime = '{:14.3f}'.format(status.st_mtime)
     btime = 0
     size = status.st_size
     uid = status.st_uid
@@ -149,12 +150,12 @@ for directory in args.directories:
         for directory in dirs:
             outstr = process_item(dirpath,directory)
             if outstr is not None:
-                print outstr
+                print (outstr)
                 sys.stdout.flush()
         for filename in files:
             if filename in args.exclude:
                 continue
             outstr = process_item(dirpath,filename)
             if outstr is not None:
-                print outstr
+                print (outstr)
                 sys.stdout.flush()

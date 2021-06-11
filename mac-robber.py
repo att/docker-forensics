@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
 # Author:  Jim Clausing
-# Date:    2021-01-07
-# Version: 1.3.1
+# Date:    2021-06-11
+# Version: 1.4
 #
 # Desc: rewrite of the sleithkit mac-robber in Python
 # Unlinke the TSK version, this one can actually includes the MD5 & inode number
@@ -31,7 +31,7 @@ import argparse
 import hashlib
 from stat import *
 
-__version_info__ = (1, 3, 1)
+__version_info__ = (1, 4, 0)
 __version__ = ".".join(map(str, __version_info__))
 
 
@@ -93,9 +93,12 @@ def process_item(dirpath, item):
         try:
             if not (fname.find("/proc/") != -1 and fname.endswith("/kcore")) and status.st_size > 0:
                 with open(fname, "rb") as f:
-                    for block in iter(lambda: f.read(65536), b""):
-                        md5.update(block)
-                md5str = md5.hexdigest()
+                    if args.size is not None and (status.st_size > args.size):
+                        md5str = "0"
+                    else:
+                        for block in iter(lambda: f.read(65536), b""):
+                            md5.update(block)
+                        md5str = md5.hexdigest()
             elif status.st_size == 0:
                 md5str = "d41d8cd98f00b204e9800998ecf8427e"
             else:
@@ -161,6 +164,9 @@ parser = argparse.ArgumentParser(description="collect data on files")
 parser.add_argument("directories", metavar="DIR", nargs="+", help="directories to traverse")
 parser.add_argument("-m", "--prefix", metavar="PREFIX", help="prefix string")
 parser.add_argument(
+    "-s", "--size", metavar="SIZE", type=int, help="max size of file to hash, MACB times collected regardless of size"
+)
+parser.add_argument(
     "-5", "--hashes", action="store_true", help="do MD5 calculation (disabled by default)", default=False
 )
 parser.add_argument(
@@ -186,6 +192,8 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+if args.size is not None:
+    print(args.size)
 
 for directory in args.directories:
     for dirpath, dirs, files in os.walk(directory):

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
 # Author:  Jim Clausing
-# Date:    2021-06-11
-# Version: 1.4
+# Date:    2023-10-07
+# Version: 1.4.1
 #
 # Desc: rewrite of the sleithkit mac-robber in Python
 # Unlinke the TSK version, this one can actually includes the MD5 & inode number
@@ -31,7 +31,7 @@ import argparse
 import hashlib
 from stat import *
 
-__version_info__ = (1, 4, 0)
+__version_info__ = (1, 4, 1)
 __version__ = ".".join(map(str, __version_info__))
 
 

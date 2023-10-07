@@ -113,11 +113,11 @@ def process_item(dirpath, item):
     if sys.version_info < (2, 7, 0):
         mtime = "%14.3f" % (status.st_mtime)
         atime = "%14.3f" % (status.st_atime)
-        ctime = "%14.3f" % (status.st_mtime)
+        ctime = "%14.3f" % (status.st_ctime)
     else:
         mtime = "{:14.3f}".format(status.st_mtime)
         atime = "{:14.3f}".format(status.st_atime)
-        ctime = "{:14.3f}".format(status.st_mtime)
+        ctime = "{:14.3f}".format(status.st_ctime)
     btime = 0
     size = status.st_size
     uid = status.st_uid

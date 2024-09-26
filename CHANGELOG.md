@@ -1,6 +1,10 @@
 # Change Log
 This file will be used to document notable changes
 
+## 2024-09-26
+### Changed
+- If pystatx module is installed, import it and get actual btimes @clausing
+
 ## 2020-06-11
 ### Changed
 - Add -s switch to mac-robber.py to specify max size of file to hash @clausing

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
 # Author:  Jim Clausing
-# Date:    2023-10-07
-# Version: 1.4.1
+# Date:    2024-09-26
+# Version: 1.5.0
 #
 # Desc: rewrite of the sleithkit mac-robber in Python
 # Unlinke the TSK version, this one can actually includes the MD5 & inode number
@@ -12,6 +12,9 @@
 # Note: in Python 2.7.x, st_ino, st_dev, st_nlink, st_uid, and st_gid are dummy variables
 # on Windows systems. This is apparently fixed in current Python 3 versions.
 # On *ALL* systems, os.stat does not return btime, so we put 0 there. :-(
+#
+# As of v1.5.0, check to see if pystatx pip module is installed, if so
+# we now have btime.
 #
 # A useful way to use this on a live Linux system is with read-only --bind mounts
 #
@@ -30,8 +33,14 @@ import sys
 import argparse
 import hashlib
 from stat import *
+try:
+    import statx
+except ImportError or ModuleNotFoundError:
+    have_statx = 0
+else:
+    have_statx = 1
 
-__version_info__ = (1, 4, 1)
+__version_info__ = (1, 5, 0)
 __version__ = ".".join(map(str, __version_info__))
 
 
@@ -111,14 +120,17 @@ def process_item(dirpath, item):
     if os.path.islink(fname) and status.st_size > 0:
         mode = mode + " -> " + os.readlink(fname)
     if sys.version_info < (2, 7, 0):
-        mtime = "%14.3f" % (status.st_mtime)
-        atime = "%14.3f" % (status.st_atime)
-        ctime = "%14.3f" % (status.st_ctime)
+        mtime = "%17.6f" % (status.st_mtime)
+        atime = "%17.6f" % (status.st_atime)
+        ctime = "%17.6f" % (status.st_ctime)
     else:
-        mtime = "{:14.3f}".format(status.st_mtime)
-        atime = "{:14.3f}".format(status.st_atime)
-        ctime = "{:14.3f}".format(status.st_ctime)
-    btime = 0
+        mtime = "{:17.6f}".format(status.st_mtime)
+        atime = "{:17.6f}".format(status.st_atime)
+        ctime = "{:17.6f}".format(status.st_ctime)
+    if have_statx:
+        btime = "{:17.6f}".format(statx.statx(fname).btime)
+    else:
+        btime = 0
     size = status.st_size
     uid = status.st_uid
     gid = status.st_gid
@@ -152,7 +164,7 @@ def process_item(dirpath, item):
         + "|"
         + ctime
         + "|"
-        + str(btime)
+        + btime
     )
 
 

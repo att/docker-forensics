@@ -158,13 +158,13 @@ def process_item(dirpath, item):
         + "|"
         + str(size)
         + "|"
-        + atime
+        + str(atime)
         + "|"
-        + mtime
+        + str(mtime)
         + "|"
-        + ctime
+        + str(ctime)
         + "|"
-        + btime
+        + str(btime)
     )
 
 

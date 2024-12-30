@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
 # Author:  Jim Clausing
-# Date:    2024-09-26
-# Version: 1.5.0
+# Date:    2024-12-30
+# Version: 1.5.1
 #
 # Desc: rewrite of the sleithkit mac-robber in Python
 # Unlinke the TSK version, this one can actually includes the MD5 & inode number
@@ -40,7 +40,7 @@ except ImportError or ModuleNotFoundError:
 else:
     have_statx = 1
 
-__version_info__ = (1, 5, 0)
+__version_info__ = (1, 5, 1)
 __version__ = ".".join(map(str, __version_info__))
 
 
@@ -128,7 +128,10 @@ def process_item(dirpath, item):
         atime = "{:17.6f}".format(status.st_atime)
         ctime = "{:17.6f}".format(status.st_ctime)
     if have_statx:
-        btime = "{:17.6f}".format(statx.statx(fname).btime)
+        try:
+            btime = "{:17.6f}".format(statx.statx(fname).btime)
+        except TypeError:
+            btime = 0
     else:
         btime = 0
     size = status.st_size

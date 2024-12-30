@@ -1,6 +1,10 @@
 # Change Log
 This file will be used to document notable changes
 
+## 2024-12-30
+### Changed
+- Work around for bug in pystatx @clausing
+
 ## 2024-09-26
 ### Changed
 - If pystatx module is installed, import it and get actual btimes @clausing

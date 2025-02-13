@@ -1,6 +1,10 @@
 # Change Log
 This file will be used to document notable changes
 
+## 2025-02-13
+### Changed
+- Fixed error in handling of soft-links
+
 ## 2024-12-30
 ### Changed
 - Work around for bug in pystatx @clausing

@@ -2,7 +2,7 @@
 #
 # Author:  Jim Clausing
 # Date:    2026-09-01
-# Version: 1.6.0
+# Version: 1.6.1
 #
 # Desc: rewrite of the sleithkit mac-robber in Python
 # Unlinke the TSK version, this one can actually includes the MD5 & inode number
@@ -34,16 +34,16 @@ import argparse
 import hashlib
 from stat import *
 if sys.version >= (3,15):
-    have_statx = 1
+    have_statx = True
 else:
     try:
         import statx
     except ImportError or ModuleNotFoundError:
-        have_statx = 0
+        have_statx = False
     else:
-        have_statx = 1
+        have_statx = True
 
-__version_info__ = (1, 6, 0)
+__version_info__ = (1, 6, 1)
 __version__ = ".".join(map(str, __version_info__))
 
 

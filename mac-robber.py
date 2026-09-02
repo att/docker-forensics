@@ -2,7 +2,7 @@
 #
 # Author:  Jim Clausing
 # Date:    2026-09-01
-# Version: 1.6.1
+# Version: 1.6.2
 #
 # Desc: rewrite of the sleithkit mac-robber in Python
 # Unlinke the TSK version, this one can actually includes the MD5 & inode number
@@ -33,7 +33,7 @@ import sys
 import argparse
 import hashlib
 from stat import *
-if sys.version >= (3,15):
+if sys.version_info >= (3, 15):
     have_statx = True
 else:
     try:
@@ -43,7 +43,7 @@ else:
     else:
         have_statx = True
 
-__version_info__ = (1, 6, 1)
+__version_info__ = (1, 6, 2)
 __version__ = ".".join(map(str, __version_info__))
 
 
@@ -134,12 +134,12 @@ def process_item(dirpath, item):
         ctime = "{:17.6f}".format(status.st_ctime)
     if have_statx:
         try:
-            if sys.version >= (3,15):
+            if sys.version_info >= (3, 15):
                 btime = "{:17.6f}".format(os.statx(fname).stx_btime)
             else:
                 btime = "{:17.6f}".format(statx.statx(fname).btime)
-            except TypeError:
-                btime = 0
+        except TypeError:
+            btime = 0
     else:
         btime = 0
     size = status.st_size
